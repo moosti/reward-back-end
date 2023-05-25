@@ -7,6 +7,6 @@ WORKDIR /app
 
 COPY --chown=application:application ./src .
 
-# RUN composer install --no-interaction
+RUN composer install --no-interaction
 
 RUN chown -R application:application .
