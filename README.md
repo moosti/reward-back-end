@@ -15,3 +15,5 @@ cp .env.example .env
 
 php artisan key:generate
 ```
+
+Default port set to 80, you can change default port in **docker-compose.yml** file.
