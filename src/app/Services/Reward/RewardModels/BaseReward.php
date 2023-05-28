@@ -38,11 +38,16 @@ abstract class BaseReward
             );
         }
 
-        if ($field->type instanceof ListType) {
-            return $this->typeValidation($fieldName, $field->type, $value);
+        $validationDto = $this->typeValidation($fieldName, $field->valueType, $value);
+        if (! $validationDto->isValid) {
+            return $validationDto;
         }
 
-        return $this->typeValidation($fieldName, $field->valueType, $value);
+        if ($field->type instanceof ListType) {
+            $validationDto = $this->typeValidation($fieldName, $field->type, $value);
+        }
+        
+        return $validationDto;
     }
 
     private function typeValidation(string $fieldName, BaseTypeInterface $type, mixed $value): ValidateFieldResultDto
