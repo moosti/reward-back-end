@@ -15,6 +15,9 @@ class FieldObject
     {
     }
 
+    /**
+     * @return array<string>
+     */
     public function toArray(): array
     {
         return [
