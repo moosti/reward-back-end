@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\RewardValidateRequest;
 use App\Services\Reward\DTO\ValidateRequestDto;
 use App\Services\Reward\Enums\RewardsEnum;
 use App\Services\Reward\RewardService;
@@ -34,13 +35,14 @@ class RewardController extends Controller
         return response()->json($this->service->getRewardFields($rewardObject));
     }
 
-    public function validateRewardFields(Request $request): JsonResponse
+//    public function validateRewardFields(Request $request): JsonResponse
+    public function validateRewardFields(RewardValidateRequest $request): JsonResponse
     {
         $dto = ValidateRequestDto::make($request);
-
-        if( $messages = $dto->getErrorMessages()) {
-            return response()->json($messages, 404);
-        }
+//
+//        if( $messages = $dto->getErrorMessages()) {
+//            return response()->json($messages, 404);
+//        }
 
         $reward = RewardsEnum::from($dto->id)->getObject();
         $result = $this->service->rewardValidateFields($reward, $dto->fields);
