@@ -4,9 +4,14 @@ namespace App\Services\Reward\RewardModels;
 
 use App\Services\Reward\DTO\ValidateFieldResultDto;
 use App\Services\Reward\RewardModels\Fields\FieldObject;
+use App\Services\Reward\RewardModels\Fields\Types\BaseTypeInterface;
+use App\Services\Reward\RewardModels\Fields\Types\ListType;
 
 abstract class BaseReward
 {
+    /**
+     * @return array<FieldObject>
+     */
     public abstract function getFields(): array;
 
     public abstract function getInfo(): array;
@@ -27,13 +32,28 @@ abstract class BaseReward
         $field = $this->getFieldByName($fieldName);
 
         if (is_null($field)) {
-            return ValidateFieldResultDto::make(false, "field with name $fieldName not exist in this reward");
+            return ValidateFieldResultDto::make(
+                false,
+                "field with name $fieldName not exist in this reward"
+            );
         }
 
-        $isValid = $field->valueType->validate($value);
-        if (!$isValid) {
-            $message = $field->valueType->generateErrorMessage($fieldName);
+        if ($field->type instanceof ListType) {
+            return $this->typeValidation($fieldName, $field->type, $value);
         }
+
+        return $this->typeValidation($fieldName, $field->valueType, $value);
+    }
+
+    private function typeValidation(string $fieldName, BaseTypeInterface $type, mixed $value): ValidateFieldResultDto
+    {
+        $message = '';
+        $isValid = $type->validate($value);
+
+        if (! $isValid) {
+            $message = $type->generateErrorMessage($fieldName);
+        }
+
         return ValidateFieldResultDto::make($isValid, $message);
     }
 
